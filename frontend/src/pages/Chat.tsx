@@ -125,7 +125,7 @@ export default function ChatPage() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:8000/api/chat/stream", {
+      const res = await fetch("/api/chat/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ question, product_id: selectedProduct, model_id: selectedModel }),
