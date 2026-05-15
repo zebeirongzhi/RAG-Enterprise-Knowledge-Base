@@ -1,21 +1,18 @@
 @echo off
-chcp 65001 >nul
-title 企业知识库 - 生产模式
+title RAG Knowledge Base - Production
 echo ========================================
-echo   企业知识库系统 - 启动中...
+echo   RAG Knowledge Base - Starting...
 echo ========================================
 echo.
 
 cd /d D:\RAG\backend
 
-echo [1/2] 激活 Python 环境...
+echo [1/2] Activating Python env...
 call C:\Users\wangf\anaconda3\Scripts\activate.bat
 call conda activate rag
 
-echo [2/2] 启动服务...
-echo.
-echo   打开浏览器访问: http://localhost:8000
-echo   关闭此窗口即可停止服务
+echo [2/2] Starting server at http://localhost:8000
+echo   Close this window to stop the server.
 echo ========================================
 start http://localhost:8000
 
