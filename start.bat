@@ -7,6 +7,9 @@ echo.
 
 cd /d D:\RAG\backend
 
+echo [0/2] Killing old process on port 8000...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8000.*LISTENING"') do (taskkill /F /PID %%a 2>nul)
+
 echo [1/2] Activating Python env...
 call C:\Users\wangf\anaconda3\Scripts\activate.bat
 call conda activate rag
