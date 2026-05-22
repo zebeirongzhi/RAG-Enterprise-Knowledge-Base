@@ -16,10 +16,19 @@ start "KB_Backend" cmd /k "cd /d D:\RAG\backend && call C:\Users\wangf\anaconda3
 echo Starting frontend dev server...
 start "KB_Frontend" cmd /k "cd /d D:\RAG\frontend && npm run dev"
 
+echo Waiting for backend to be ready...
+:wait_backend
+timeout /t 2 >nul
+powershell -Command "try { $r = Invoke-WebRequest -Uri 'http://localhost:8000/api/health' -UseBasicParsing; if ($r.StatusCode -eq 200) { exit 0 } else { exit 1 } } catch { exit 1 }" >nul 2>&1
+if errorlevel 1 (
+    echo   Still loading...
+    goto wait_backend
+)
+
+echo All services ready! Opening browser...
 echo.
 echo   Backend:  http://localhost:8000
 echo   Frontend: http://localhost:5173
 echo ========================================
-timeout /t 3 >nul
 start http://localhost:5173
 pause
