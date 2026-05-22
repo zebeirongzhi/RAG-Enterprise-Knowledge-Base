@@ -19,6 +19,8 @@ echo   Close this window to stop the server.
 echo ========================================
 start http://localhost:8000
 
+set HF_HUB_OFFLINE=1
+set TRANSFORMERS_OFFLINE=1
 uvicorn main:app --host 0.0.0.0 --port 8000
 
 pause
