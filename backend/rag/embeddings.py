@@ -9,7 +9,6 @@ def get_embedding_model() -> SentenceTransformer:
     if _embedding_model is None:
         _embedding_model = SentenceTransformer(
             settings.embedding_model,
-            device=settings.embedding_device,
-            local_files_only=True
+            device=settings.embedding_device
         )
     return _embedding_model
