@@ -21,8 +21,8 @@ def stream_ask(req: ChatRequest, db: Session = Depends(get_db), user=Depends(get
     )
 
 @router.get("/conversations")
-def list_conversations(db: Session = Depends(get_db), user=Depends(get_current_user)):
-    return get_conversations(db, user.id, user.role)
+def list_conversations(db: Session = Depends(get_db), user=Depends(get_current_user), today: bool = False):
+    return get_conversations(db, user.id, user.role, today_only=today)
 
 @router.delete("/conversations/{conv_id}")
 def remove_conversation(conv_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):

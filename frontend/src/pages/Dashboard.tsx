@@ -12,7 +12,7 @@ export default function Dashboard() {
     Promise.all([
       client.get("/api/products"),
       client.get("/api/documents/count"),
-      client.get("/api/chat/conversations"),
+      client.get("/api/chat/conversations?today=true"),
     ]).then(([productsRes, docsRes, convsRes]) => {
       setStats({
         products: productsRes.data.length,

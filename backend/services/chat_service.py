@@ -91,10 +91,16 @@ def chat_stream(db: Session, question: str, user_id: int, product_id: int = None
     db.commit()
     yield "data: [DONE]\n\n"
 
-def get_conversations(db: Session, user_id: int, role: str) -> list[Conversation]:
-    if role == "admin":
-        return db.query(Conversation).order_by(Conversation.created_at.desc()).limit(50).all()
-    return db.query(Conversation).filter(Conversation.user_id == user_id).order_by(Conversation.created_at.desc()).limit(50).all()
+def get_conversations(db: Session, user_id: int, role: str, today_only: bool = False) -> list[Conversation]:
+    from datetime import datetime, timezone
+    q = db.query(Conversation)
+    if role != "admin":
+        q = q.filter(Conversation.user_id == user_id)
+    if today_only:
+        now = datetime.now(timezone.utc)
+        start = datetime(now.year, now.month, now.day, tzinfo=timezone.utc)
+        q = q.filter(Conversation.created_at >= start)
+    return q.order_by(Conversation.created_at.desc()).limit(50).all()
 
 def delete_conversation(db: Session, conv_id: int, user_id: int, role: str):
     conv = db.query(Conversation).filter(Conversation.id == conv_id).first()
