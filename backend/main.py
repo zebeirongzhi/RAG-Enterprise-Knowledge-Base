@@ -1,8 +1,8 @@
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from database import engine, Base
 from api.auth import router as auth_router
@@ -45,7 +45,18 @@ def health():
     return {"status": "ok"}
 
 
-# Serve frontend static files in production
+# Serve frontend static files in production (SPA fallback)
 frontend_dist = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+_frontend_dist = frontend_dist
+
 if os.path.exists(frontend_dist):
-    app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        # Serve static files that exist on disk
+        file_path = os.path.join(_frontend_dist, full_path) if full_path else ""
+        if full_path and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        # Fallback to index.html for SPA routing
+        index = os.path.join(_frontend_dist, "index.html")
+        return FileResponse(index)
