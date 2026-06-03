@@ -34,23 +34,10 @@ if errorlevel 1 (
     goto wait_fe
 )
 
-echo Starting ngrok tunnel to frontend dev server...
-set NGROK_PATH=C:\Users\wangf\AppData\Local\Microsoft\WinGet\Packages\Ngrok.Ngrok_Microsoft.Winget.Source_8wekyb3d8bbwe\ngrok.exe
-start "KB_Ngrok" cmd /k ""%NGROK_PATH%" http 5173 --log=stdout"
-
-echo Waiting for ngrok tunnel...
-:wait_ngrok
-timeout /t 2 >nul
-for /f "delims=" %%u in ('powershell -Command "try { $r = Invoke-RestMethod -Uri 'http://localhost:4040/api/tunnels' -Method Get; $r.tunnels[0].public_url } catch { Write-Output '' }" 2^>nul') do set "NGROK_URL=%%u"
-if "%NGROK_URL%"=="" (
-    echo   Establishing tunnel...
-    goto wait_ngrok
-)
-
 echo.
 echo ========================================
-echo   Local:    http://localhost:5173
-echo   Public:   %NGROK_URL%
+echo   Backend:  http://localhost:8000
+echo   Frontend: http://localhost:5173
 echo ========================================
-start %NGROK_URL%
+start http://localhost:5173
 pause
